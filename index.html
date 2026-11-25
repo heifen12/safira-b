@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safira Bot</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 25px 18px;
+  background: #10091b;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+h1 { color: #c084fc; font-size: 32px; }
+p { color: #c9b8d9; }
+.card {
+  background: #211333;
+  border: 1px solid #7541a5;
+  border-radius: 20px;
+  padding: 22px;
+  margin: 20px auto;
+  max-width: 440px;
+}
+input {
+  display: block;
+  width: 100%;
+  margin: 15px 0;
+  padding: 12px;
+  background: #34204b;
+  color: white;
+  border-radius: 10px;
+}
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  border: 0;
+  border-radius: 12px;
+  background: #a855f7;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+}
+button:disabled { opacity: .5; }
+audio { width: 100%; margin-top: 15px; }
+#preview {
+  max-width: 180px;
+  max-height: 180px;
+  object-fit: contain;
+  margin-top: 15px;
+  border-radius: 15px;
+}
+footer { color: #9b83ae; font-size: 12px; }
+</style>
+</head>
+<body>
+<h1>👑 SAFIRA BOT</h1>
+<p>Seu cantinho de figurinhas e sons!</p>
+
+<div class="card">
+  <h2>🎨 Escolha uma imagem</h2>
+  <input type="file" id="imagem" accept="image/*">
+  <img id="preview" hidden>
+
+  <h2>🔊 Escolha um áudio</h2>
+  <input type="file" id="audioFile" accept="audio/*">
+  <audio id="player" controls hidden></audio>
+
+  <button id="baixar">Baixar imagem</button>
+  <p id="status">Escolha seus arquivos para começar.</p>
+</div>
+
+<footer>SAFIRA BOT • Feito com carinho 💜</footer>
+
+<script>
+const imagem = document.getElementById('imagem');
+const audioFile = document.getElementById('audioFile');
+const preview = document.getElementById('preview');
+const player = document.getElementById('player');
+const status = document.getElementById('status');
+
+imagem.onchange = () => {
+  const file = imagem.files[0];
+  if (!file) return;
+  preview.src = URL.createObjectURL(file);
+  preview.hidden = false;
+  status.textContent = 'Imagem carregada!';
+};
+
+audioFile.onchange = () => {
+  const file = audioFile.files[0];
+  if (!file) return;
+  player.src = URL.createObjectURL(file);
+  player.hidden = false;
+  status.textContent = 'Áudio carregado! Você já pode ouvir.';
+};
+
+document.getElementById('baixar').onclick = () => {
+  const file = imagem.files[0];
+  if (!file) {
+    status.textContent = 'Escolha uma imagem primeiro!';
+    return;
+  }
+  const link = document.createElement('a');
+  link.href = preview.src;
+  link.download = 'safira-figurinha.png';
+  link.click();
+};
+</script>
+</body>
+</html>
