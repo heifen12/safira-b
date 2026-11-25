@@ -1,115 +1,143 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Safira Bot</title>
+<title>Safira | Figurinhas</title>
+
 <style>
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  padding: 25px 18px;
-  background: #10091b;
+  padding: 25px 15px;
+  background: #120b1c;
   color: white;
   font-family: Arial, sans-serif;
   text-align: center;
 }
-h1 { color: #c084fc; font-size: 32px; }
-p { color: #c9b8d9; }
-.card {
-  background: #211333;
-  border: 1px solid #7541a5;
-  border-radius: 20px;
-  padding: 22px;
-  margin: 20px auto;
-  max-width: 440px;
+
+.container {
+  max-width: 430px;
+  margin: 35px auto;
+  padding: 25px;
+  background: #21142e;
+  border-radius: 22px;
+  border: 1px solid #593675;
 }
-input {
+
+h1 {
+  color: #d8a5ff;
+}
+
+p {
+  color: #c9b7d8;
+}
+
+.escolher {
   display: block;
   width: 100%;
+  padding: 15px;
   margin: 15px 0;
-  padding: 12px;
-  background: #34204b;
+  background: #7139a1;
   color: white;
-  border-radius: 10px;
-}
-button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 12px;
-  border: 0;
   border-radius: 12px;
-  background: #a855f7;
-  color: white;
+  cursor: pointer;
   font-weight: bold;
-  font-size: 16px;
 }
-button:disabled { opacity: .5; }
-audio { width: 100%; margin-top: 15px; }
-#preview {
-  max-width: 180px;
-  max-height: 180px;
-  object-fit: contain;
-  margin-top: 15px;
+
+input {
+  display: none;
+}
+
+img {
+  max-width: 100%;
+  max-height: 250px;
   border-radius: 15px;
+  margin-top: 15px;
 }
-footer { color: #9b83ae; font-size: 12px; }
+
+audio {
+  width: 100%;
+  margin-top: 20px;
+}
+
+button {
+  border: none;
+  background: #a45bd2;
+  color: white;
+  padding: 12px 25px;
+  border-radius: 12px;
+  margin-top: 20px;
+  font-weight: bold;
+}
 </style>
 </head>
+
 <body>
-<h1>👑 SAFIRA BOT</h1>
-<p>Seu cantinho de figurinhas e sons!</p>
 
-<div class="card">
-  <h2>🎨 Escolha uma imagem</h2>
+<div class="container">
+  <h1>💜 Safira</h1>
+  <p>Escolha sua imagem e seu áudio!</p>
+
+  <label class="escolher" for="imagem">
+    🖼️ Escolher imagem
+  </label>
   <input type="file" id="imagem" accept="image/*">
-  <img id="preview" hidden>
 
-  <h2>🔊 Escolha um áudio</h2>
-  <input type="file" id="audioFile" accept="audio/*">
-  <audio id="player" controls hidden></audio>
+  <div id="previewImagem"></div>
 
-  <button id="baixar">Baixar imagem</button>
-  <p id="status">Escolha seus arquivos para começar.</p>
+  <label class="escolher" for="audio">
+    🎵 Escolher áudio
+  </label>
+  <input type="file" id="audio" accept="audio/*">
+
+  <div id="previewAudio"></div>
+
+  <button onclick="limpar()">Limpar arquivos</button>
 </div>
 
-<footer>SAFIRA BOT • Feito com carinho 💜</footer>
-
 <script>
-const imagem = document.getElementById('imagem');
-const audioFile = document.getElementById('audioFile');
-const preview = document.getElementById('preview');
-const player = document.getElementById('player');
-const status = document.getElementById('status');
+let imagemURL = null;
+let audioURL = null;
 
-imagem.onchange = () => {
-  const file = imagem.files[0];
-  if (!file) return;
-  preview.src = URL.createObjectURL(file);
-  preview.hidden = false;
-  status.textContent = 'Imagem carregada!';
-};
+document.getElementById("imagem").addEventListener("change", function() {
+  const arquivo = this.files[0];
+  if (!arquivo) return;
 
-audioFile.onchange = () => {
-  const file = audioFile.files[0];
-  if (!file) return;
-  player.src = URL.createObjectURL(file);
-  player.hidden = false;
-  status.textContent = 'Áudio carregado! Você já pode ouvir.';
-};
+  if (imagemURL) URL.revokeObjectURL(imagemURL);
+  imagemURL = URL.createObjectURL(arquivo);
 
-document.getElementById('baixar').onclick = () => {
-  const file = imagem.files[0];
-  if (!file) {
-    status.textContent = 'Escolha uma imagem primeiro!';
-    return;
-  }
-  const link = document.createElement('a');
-  link.href = preview.src;
-  link.download = 'safira-figurinha.png';
-  link.click();
-};
+  document.getElementById("previewImagem").innerHTML =
+    `<img src="${imagemURL}" alt="Imagem escolhida">`;
+});
+
+document.getElementById("audio").addEventListener("change", function() {
+  const arquivo = this.files[0];
+  if (!arquivo) return;
+
+  if (audioURL) URL.revokeObjectURL(audioURL);
+  audioURL = URL.createObjectURL(arquivo);
+
+  document.getElementById("previewAudio").innerHTML =
+    `<audio controls src="${audioURL}"></audio>`;
+});
+
+function limpar() {
+  if (imagemURL) URL.revokeObjectURL(imagemURL);
+  if (audioURL) URL.revokeObjectURL(audioURL);
+
+  imagemURL = null;
+  audioURL = null;
+
+  document.getElementById("imagem").value = "";
+  document.getElementById("audio").value = "";
+  document.getElementById("previewImagem").innerHTML = "";
+  document.getElementById("previewAudio").innerHTML = "";
+}
 </script>
+
 </body>
 </html>
